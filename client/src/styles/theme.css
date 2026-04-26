@@ -1,0 +1,22 @@
+/* theme.css: dark theme, palette, typography, spacing */
+:root {
+  --color-bg: #181c24;
+  --color-card: #23283a;
+  --color-accent: linear-gradient(90deg, #5f72bd 0%, #9a5cff 100%);
+  --color-text: #f5f6fa;
+  --color-success: #3dd598;
+  --color-warning: #ffd166;
+  --color-error: #ff6b6b;
+  --font-main: 'Inter', Arial, sans-serif;
+  --spacing-xs: 4px;
+  --spacing-s: 8px;
+  --spacing-m: 16px;
+  --spacing-l: 24px;
+  --spacing-xl: 32px;
+}
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-main);
+  margin: 0;
+}
