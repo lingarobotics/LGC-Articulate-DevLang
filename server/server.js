@@ -1,4 +1,3 @@
-// 🔥 MUST BE FIRST — load env before anything
 require('dotenv').config();
 
 const express = require('express');
@@ -8,7 +7,7 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 
 const config = require('./config');
-const { connectDB } = require('./config/database');
+const { connectDB, disconnectDB } = require('./config/database');
 
 const evaluationRoutes = require('./routes/evaluationRoutes');
 const doubtRoutes = require('./routes/doubtRoutes');
@@ -16,14 +15,11 @@ const authRoutes = require('./routes/authRoutes');
 
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 
-// 🔥 Validate env
 config.validateConfig();
 
 const app = express();
 
-// ============================================
-// 🔐 MIDDLEWARE
-// ============================================
+// ===================== MIDDLEWARE =====================
 
 app.use(helmet());
 
@@ -41,7 +37,6 @@ if (config.nodeEnv === 'development') {
   app.use(morgan('combined'));
 }
 
-// 🔥 APPLY RATE LIMIT ONLY TO API (NOT GLOBAL UI)
 const limiter = rateLimit({
   windowMs: config.rateLimitWindowMs,
   max: config.rateLimitMaxRequests,
@@ -55,13 +50,10 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 
-app.use('/api', limiter); // ✅ FIXED
+app.use('/api', limiter);
 
-// ============================================
-// 🌐 ROUTES
-// ============================================
+// ===================== ROUTES =====================
 
-// Health check
 app.get('/health', (req, res) => {
   res.status(200).json({
     success: true,
@@ -71,70 +63,42 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Root
 app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
     message: 'LGC Articulate — DevLang API',
     version: '1.0.0',
-    description: 'Intent-based communication evaluation engine',
     endpoints: {
       health: 'GET /health',
-      evaluate: 'POST /api/evaluate',
-      getHistory: 'GET /api/evaluate/user/history',
-      auth: {
-        signup: 'POST /api/auth/signup',
-        login: 'POST /api/auth/login',
-        forgot: 'POST /api/auth/forgot-password',
-        reset: 'POST /api/auth/reset-password'
-      }
+      evaluate: 'POST /api/evaluate'
     }
   });
 });
 
-// 🔥 MAIN ROUTES
 app.use(`${config.apiPrefix}/evaluate`, evaluationRoutes);
 app.use(`${config.apiPrefix}/doubt`, doubtRoutes);
 app.use(`${config.apiPrefix}/auth`, authRoutes);
 
-// ============================================
-// ❌ ERROR HANDLING
-// ============================================
+// ===================== ERROR HANDLING =====================
 
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-// ============================================
-// 🚀 SERVER START
-// ============================================
+// ===================== SERVER =====================
 
 async function startServer() {
   try {
-    // 🔥 REMOVE THESE IN PROD (optional debug)
-    console.log("ENV:", config.nodeEnv);
-
-    await connectDB(config.mongoUri);
+    await connectDB();
 
     const server = app.listen(config.port, () => {
-      console.log('============================================');
-      console.log('  LGC Articulate — DevLang API');
-      console.log('============================================');
-      console.log(`Environment: ${config.nodeEnv}`);
-      console.log(`Port: ${config.port}`);
-      console.log(`API Base: ${config.apiPrefix}`);
-      console.log('============================================');
+      console.log(`Server running on port ${config.port}`);
     });
 
-    // 🔥 GRACEFUL SHUTDOWN
     const shutdown = async (signal) => {
-      console.log(`\n${signal} received. Shutting down...`);
+      console.log(`${signal} received. Shutting down...`);
 
       server.close(async () => {
-        console.log('Server closed');
-
-        const { disconnectDB } = require('./config/database');
         await disconnectDB();
-
         process.exit(0);
       });
 
@@ -144,19 +108,10 @@ async function startServer() {
     process.on('SIGTERM', () => shutdown('SIGTERM'));
     process.on('SIGINT', () => shutdown('SIGINT'));
 
-    process.on('unhandledRejection', (err) => {
-      console.error('Unhandled Rejection:', err);
-    });
-
-    process.on('uncaughtException', (err) => {
-      console.error('Uncaught Exception:', err);
-      process.exit(1);
-    });
-
     return server;
 
-  } catch (error) {
-    console.error('Server start failed:', error);
+  } catch (err) {
+    console.error('Startup error:', err);
     process.exit(1);
   }
 }

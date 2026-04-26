@@ -1,11 +1,16 @@
-// server/config/database.js
-
 const mongoose = require('mongoose');
 
 /**
- * Connect to MongoDB
+ * Connect to MongoDB (Production Ready)
  */
-async function connectDB(uri) {
+async function connectDB() {
+  const uri = process.env.MONGO_URI;
+
+  if (!uri) {
+    console.error('❌ MONGO_URI is not defined');
+    process.exit(1);
+  }
+
   try {
     const options = {
       maxPoolSize: 10,
@@ -19,7 +24,7 @@ async function connectDB(uri) {
 
     const conn = await mongoose.connect(uri, options);
 
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
 
     // 🔥 EVENTS
     mongoose.connection.on('error', (err) => {
@@ -27,27 +32,18 @@ async function connectDB(uri) {
     });
 
     mongoose.connection.on('disconnected', () => {
-      console.warn('MongoDB disconnected');
+      console.warn('⚠️ MongoDB disconnected');
     });
 
     mongoose.connection.on('reconnected', () => {
-      console.log('MongoDB reconnected');
+      console.log('🔁 MongoDB reconnected');
     });
 
     return conn;
 
   } catch (error) {
-    console.error('MongoDB connection failed:', error.message);
-
-    // 🔥 RETRY (DEV FRIENDLY)
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('Retrying connection in 5 seconds...');
-      setTimeout(() => connectDB(uri), 5000);
-    } else {
-      process.exit(1);
-    }
-
-    throw error;
+    console.error('❌ MongoDB connection failed:', error.message);
+    process.exit(1); // 🔥 Fail fast in production
   }
 }
 
