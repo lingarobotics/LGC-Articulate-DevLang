@@ -11,9 +11,7 @@ const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
  * 🔥 BASE URL HELPER
  */
 function getBaseUrl() {
-  return process.env.NODE_ENV === "production"
-    ? process.env.PRODUCTION_DOMAIN
-    : "http://localhost:5173";
+  return process.env.CLIENT_URL || "http://localhost:5173";
 }
 
 
@@ -29,7 +27,7 @@ async function sendVerificationEmail(user, token) {
 
     const email = {
       sender: {
-        name: "LGC Articulate",
+        name: "LGC Articulate - DevLang",
         email: process.env.EMAIL_FROM
       },
       to: [
@@ -75,7 +73,7 @@ async function sendResetEmail(user, token) {
 
     const email = {
       sender: {
-        name: "LGC Articulate",
+        name: "LGC Articulate - DevLang",
         email: process.env.EMAIL_FROM
       },
       to: [
