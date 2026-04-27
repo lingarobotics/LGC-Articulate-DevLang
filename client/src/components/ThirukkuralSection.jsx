@@ -20,13 +20,18 @@ export default function ThirukkuralSection() {
             அவையறிந்து ஆராய்ந்து சொல்லுக சொல்லின்<br />
             தொகையறிந்த தூய்மை யவர்
           </div>
-          <div className="thirukkural-meaning">
+          <div className="thirukkural-label">பொருள்</div>
+          <div className="thirukkural-box thirukkural-porul">
+            அவை நிகழ்விடம், அங்குள்ளோர், சூழ்நிலை ஆகியவற்றை ஆராய்ந்து, சொற்களின் பொருளையும் தூய்மையையும் உணர்ந்து, தகுந்தவாறு பேச வேண்டும்.
+          </div>
+          <div className="thirukkural-label">What it means</div>
+          <div className="thirukkural-box thirukkural-meaning">
             "The wise speak after understanding their audience,<br />
             adapting their words with clarity and precision."
           </div>
           <div className="thirukkural-divider" />
-          <div className="thirukkural-app-interpret">
-            In LGC Articulate DevLang, articulation means:
+          <div className="thirukkural-box thirukkural-app-interpret">
+            <div className="thirukkural-app-title">In LGC Articulate DevLang, articulation means:</div>
             <ul>
               <li>Understanding context before expression</li>
               <li>Writing logic that adapts, not just executes</li>

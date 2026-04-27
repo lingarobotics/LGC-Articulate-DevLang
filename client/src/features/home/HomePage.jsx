@@ -1,11 +1,12 @@
 // client/src/features/home/HomePage.jsx
 
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ThirukkuralSection from "../../components/ThirukkuralSection";
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const [showThirukkural, setShowThirukkural] = useState(false);
 
   return (
     <div className="home-container">
@@ -18,8 +19,23 @@ export default function HomePage() {
         </p>
       </div>
 
+      {/* CTA SECTION */}
+      {!showThirukkural && (
+        <div className="cta-section">
+          <p className="cta-text">
+            The purpose of this application was defined thousands of years ago by Thiruvalluvar. Do you want to see it?
+          </p>
+          <button
+            className="primary-btn"
+            onClick={() => setShowThirukkural(true)}
+          >
+            Discover
+          </button>
+        </div>
+      )}
+
       {/* PHILOSOPHY SECTION */}
-      <ThirukkuralSection />
+      {showThirukkural && <ThirukkuralSection />}
 
       {/* ACTIONS */}
       <div className="home-actions">
