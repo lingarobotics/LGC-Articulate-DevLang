@@ -1,6 +1,6 @@
 # 🌿 LGC Articulate — DevLang
 
-![LGC Articulate Home](./docs/images/development-and-ui-screenshots/current-home-page.png)
+![LGC Articulate Home](./docs/images/development-and-ui-screenshots/home-page-v1.png)
 
 ---
 
