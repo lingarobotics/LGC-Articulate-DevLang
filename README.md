@@ -206,6 +206,17 @@ Backend: http://localhost:3000
 
 ---
 
+## 📄 Engineering Systems Report
+
+Detailed engineering documentation, architecture workflows, implementation reasoning, AI-assisted evaluation pipeline design, and communication system analysis are available in the systems report.
+
+### 🔗 View Documentation
+
+- [Systems Report Markdown](./docs/systems-report/SYSTEMS-REPORT.md)
+- [Systems Report PDF](./docs/systems-report/LGC-Articulate-DevLang-Systems-Report.pdf)
+
+---
+
 ## ⚠️ Known Limitations
 
 * Response format inconsistency
